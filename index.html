@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -133,6 +134,9 @@
                 <optgroup label="E-Katalog">
                   <option value="https://data.inaproc.id/api/v1/ekatalog/paket-e-purchasing">Paket E-Purchasing
                   </option>
+                  <option value="https://data.inaproc.id/api/v1/ekatalog-archive/paket-e-purchasing">Paket E-Purchasing
+                    (Archive)
+                  </option>
                   <option value="https://data.inaproc.id/api/v1/ekatalog/penyedia-detail">Penyedia Detail</option>
                 </optgroup>
                 <optgroup label="RUP (Rencana Umum Pengadaan)">
@@ -212,7 +216,7 @@
                 <i class="ph ph-table text-lg"></i> Preview
               </button>
               <button id="downloadBtn" class="btn btn-primary min-w-[140px]">
-                <i class="ph ph-download-simple text-lg font-bold"></i> Download CSV
+                <i class="ph ph-file-xls text-lg font-bold"></i> Download Excel
               </button>
             </div>
           </div>
@@ -367,6 +371,7 @@
     const ENDPOINT_CONFIG = {
       // E-Katalog endpoints
       "/api/v1/ekatalog/paket-e-purchasing": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/ekatalog-archive/paket-e-purchasing": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
       "/api/v1/ekatalog/penyedia-detail": { useKodePenyedia: true, useLimit: false, useCursor: false },
       // RUP endpoints
       "/api/v1/rup/master-satker": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
@@ -577,26 +582,15 @@
       }
     }
 
-    function downloadCsv(items) {
+    function downloadExcel(items) {
       if (!items.length) return;
-      const columns = Object.keys(items[0]);
-      const escapeCell = (value) => {
-        const text = value === null || value === undefined ? "" : String(value);
-        return `"${text.replace(/"/g, "\"\"")}"`;
-      };
-      const rows = [
-        columns.map(escapeCell).join(","),
-        ...items.map((item) => columns.map((col) => escapeCell(item[col])).join(","))
-      ];
-      const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `data_${new Date().getTime()}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
+
+      const worksheet = XLSX.utils.json_to_sheet(items);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      XLSX.writeFile(workbook, `data_${timestamp}.xlsx`);
     }
 
     function renderTable(items) {
@@ -663,7 +657,7 @@
     document.getElementById("downloadBtn").addEventListener("click", async () => {
       const signature = getSignature();
       if (lastItems && lastSignature === signature && lastItems.length) {
-        downloadCsv(lastItems);
+        downloadExcel(lastItems);
         setStatus(`Downloaded cached data (${lastItems.length} rows).`, 'success');
         return;
       }
@@ -671,7 +665,7 @@
       if (items && items.length) {
         lastItems = items;
         lastSignature = signature;
-        downloadCsv(items);
+        downloadExcel(items);
         setStatus(`Downloaded ${items.length} rows.`, 'success');
         renderTable(items); // Also show data
       }

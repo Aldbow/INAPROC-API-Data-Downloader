@@ -1,0 +1,25 @@
+{
+  "name": "inaproc-api-data-downloader",
+  "version": "1.0.0",
+  "description": "Website sederhana untuk mengambil data pengadaan dari INAPROC API Gateway dan mengunduhnya sebagai CSV.",
+  "main": "api-client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aldbow/INAPROC-API-Data-Downloader.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Aldbow/INAPROC-API-Data-Downloader/issues"
+  },
+  "homepage": "https://github.com/Aldbow/INAPROC-API-Data-Downloader#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "xlsx": "^0.18.5"
+  }
+}

@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>INAPROC API Data Downloader</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    .panel { max-width: 1100px; margin: 0 auto; }
+    label { display: block; margin-bottom: 6px; font-weight: 600; }
+    input, select, button { padding: 8px; font-size: 14px; }
+    input[type="text"], input[type="number"] { width: 40ch; }
+    #apiUrl { width: 48ch; }
+    button { margin-top: 8px; }
+    .field { margin-bottom: 12px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: none; padding: 6px 8px; text-align: left; vertical-align: top; }
+    th { background: #f0f0f0; }
+    .table-wrap { max-height: 60vh; overflow: auto; border: none; }
+    #info { margin-top: 8px; display: flex; gap: 12px; align-items: center; }
+    .title { text-align: center; font-weight: 700; }
+    .layout-table { width: 100%; border-collapse: separate; border-spacing: 12px; table-layout: fixed; }
+    .layout-table td { vertical-align: top; padding: 8px; }
+    .left-col, .right-col { width: 50%; }
+    .sidebox { border: 1px dashed #ddd; padding: 12px; }
+    .sidebox h2 { font-weight: 700; margin: 0 0 6px; }
+    .sidebox p { margin: 6px 0; }
+    .sidebox .small { font-size: 11px; }
+    .footer { margin-top: 10px; font-size: 12px; color: #666; text-align: center; }
+    .divider { margin: 30px 0 5px; }
+    .divider span { display: inline-block; padding: 0 8px; color: #000000; }
+    .divider:before, .divider:after {
+      content: "";
+      display: inline-block;
+      vertical-align: middle;
+      width: 60px;
+      border-top: 1px dashed rgb(0, 0, 0)
+    }
+    .divider:before { margin-right: 8px; }
+    .divider:after { margin-left: 8px; }
+
+    @media (max-width: 900px) {
+      body { margin: 16px; }
+      input[type="text"], input[type="number"], #apiUrl { width: 100%; }
+      .layout-table, .layout-table tr, .layout-table td { display: block; width: 100%; }
+      .layout-table { border-spacing: 0; }
+      .layout-table td { padding: 0; }
+      .left-col, .right-col { width: 100%; }
+      .sidebox { margin-top: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <h1 class="title">INAPROC API Data Downloader</h1>
+    <table class="layout-table">
+      <tr>
+        <td class="left-col">
+
+  <!-- API token -->
+  <div class="field">
+    <label for="token">Token API</label>
+    <input id="token" type="text" placeholder="inprceaxxxxxxxxdea437a1ae" size="48" />
+  </div>
+
+  <!-- Endpoint selector -->
+  <div class="field">
+    <label for="apiUrl">Endpoints</label>
+    <select id="apiUrl">
+      <!-- E-Katalog endpoints -->
+      <option value="https://data.inaproc.id/api/v1/ekatalog/paket-e-purchasing">
+        /api/v1/ekatalog/paket-e-purchasing
+      </option>
+      <option value="https://data.inaproc.id/api/v1/ekatalog/penyedia-detail">
+        /api/v1/ekatalog/penyedia-detail
+      </option>
+      <!-- RUP endpoints -->
+      <option value="https://data.inaproc.id/api/v1/rup/master-satker">
+        /api/v1/rup/master-satker
+      </option>
+      <option value="https://data.inaproc.id/api/v1/rup/paket-anggaran-penyedia">
+        /api/v1/rup/paket-anggaran-penyedia
+      </option>
+      <option value="https://data.inaproc.id/api/v1/rup/paket-anggaran-swakelola">
+        /api/v1/rup/paket-anggaran-swakelola
+      </option>
+      <option value="https://data.inaproc.id/api/v1/rup/paket-penyedia-terumumkan">
+        /api/v1/rup/paket-penyedia-terumumkan
+      </option>
+      <option value="https://data.inaproc.id/api/v1/rup/paket-swakelola-terumumkan">
+        /api/v1/rup/paket-swakelola-terumumkan
+      </option>
+      <option value="https://data.inaproc.id/api/v1/rup/program-master">
+        /api/v1/rup/program-master
+      </option>
+      <!-- Tender endpoints -->
+      <option value="https://data.inaproc.id/api/v1/tender/jadwal-tahapan-non-tender">
+        /api/v1/tender/jadwal-tahapan-non-tender
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/jadwal-tahapan-tender">
+        /api/v1/tender/jadwal-tahapan-tender
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/non-tender-ekontrak-kontrak">
+        /api/v1/tender/non-tender-ekontrak-kontrak
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/non-tender-pengumuman">
+        /api/v1/tender/non-tender-pengumuman
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/non-tender-selesai">
+        /api/v1/tender/non-tender-selesai
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/pencatatan-non-tender">
+        /api/v1/tender/pencatatan-non-tender
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/pencatatan-non-tender-realisasi">
+        /api/v1/tender/pencatatan-non-tender-realisasi
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/pencatatan-swakelola">
+        /api/v1/tender/pencatatan-swakelola
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/pencatatan-swakelola-realisasi">
+        /api/v1/tender/pencatatan-swakelola-realisasi
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/pengumuman">
+        /api/v1/tender/pengumuman
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/peserta-tender">
+        /api/v1/tender/peserta-tender
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/tender-ekontrak-kontrak">
+        /api/v1/tender/tender-ekontrak-kontrak
+      </option>
+      <option value="https://data.inaproc.id/api/v1/tender/tender-selesai-nilai">
+        /api/v1/tender/tender-selesai-nilai
+      </option>
+    </select>
+  </div>
+  <div class="divider"><span>Parameter</span></div>
+
+  <!-- Query parameters (shown based on endpoint) -->
+  <div id="fieldKodeKlpd" class="field">
+    <label for="kodeKlpd">Kode KLPD</label>
+    <input id="kodeKlpd" type="text" placeholder="D123" />
+  </div>
+
+  <div id="fieldKodePenyedia" class="field" style="display: none;">
+    <label for="kodePenyedia">Kode Penyedia</label>
+    <input id="kodePenyedia" type="text" placeholder="01J8PR1TAZG60XXXXXXXW1NB" />
+  </div>
+
+  <div id="fieldKodeTender" class="field" style="display: none;">
+    <label for="kodeTender">Kode Tender</label>
+    <input id="kodeTender" type="text" placeholder="100002345" />
+  </div>
+
+  <div id="fieldTahun" class="field">
+    <label for="tahun">Tahun</label>
+    <input id="tahun" type="number" placeholder="2025" />
+  </div>
+
+  <!-- Debug toggle (no token logging) -->
+  <div class="field">
+    <label>
+      <input id="debug" type="checkbox" />
+      Debug logging
+    </label>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button id="showBtn">Show Data</button>
+    <button id="downloadBtn">Download Data</button>
+  </div>
+
+  <!-- Status -->
+  <div id="info">
+    <span id="status"></span>
+  </div>
+  <!-- Results table (hidden until data exists) -->
+        </td>
+        <td class="right-col">
+          <div class="sidebox">
+            <h2>Tata Cara Penggunaan</h2>
+            <p>1) Isi Token API yang didapatkan dari https://data.inaproc.id/portal/.</p>
+            <p>2) Pilih endpoint data yang ingin diambil, pastikan Token API punya akses ke endpoint tersebut.</p>
+            <p>3) Isi parameter yang tersedia.</p>
+            <p>4) Klik Show Data untuk menampilkan data atau Download Data untuk mengunduh CSV.</p>
+            <p class="small">Debug logging membantu melihat request/response. Buka DevTools (F12), lalu lihat tab Console.</p>
+          </div>
+          <div class="sidebox">
+            <h2>Source Code</h2>
+            <p>
+              Kode sumber halaman ini tersedia di
+              <a href="https://github.com/deniganda/INAPROC-API-Downloader" target="_blank" rel="noopener">
+                GitHub</a>.
+            </p>
+            <p class="small">Silakan buka repositori untuk mengunduh <em>source code</em> dan menjalankannya secara lokal.</p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div id="tableWrap" class="table-wrap" style="display: none;">
+            <table id="table"></table>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div class="footer">Halaman ini merupakan <em>proof of concept</em>. <br />Demi keamanan API Token, jalankan website ini secara lokal di komputer atau server yang terpercaya.</div>
+        </td>
+      </tr>
+    </table>
+  </main>
+
+  <script>
+    // Random limit for first page or retries when cursor is missing.
+    function getRandomLimit() {
+      return Math.floor(Math.random() * (100 - 80 + 1)) + 80;
+    }
+
+    // Build query params based on the selected endpoint.
+    function getParams(config, cursorOverride, limitOverride) {
+      const kodeKlpd = document.getElementById("kodeKlpd").value.trim();
+      const tahun = document.getElementById("tahun").value.trim();
+      const kodePenyedia = document.getElementById("kodePenyedia").value.trim();
+      const kodeTender = document.getElementById("kodeTender").value.trim();
+      const limitValue = typeof limitOverride === "number" ? limitOverride : getRandomLimit();
+      const cursor = typeof cursorOverride === "string" ? cursorOverride : "";
+
+      const params = new URLSearchParams();
+      if (config.useKodeKlpd && kodeKlpd) params.set("kode_klpd", kodeKlpd);
+      if (config.useKodePenyedia && kodePenyedia) params.set("kode_penyedia", kodePenyedia);
+      if (config.useKodeTender && kodeTender) params.set("kode_tender", kodeTender);
+      if (config.useTahun && tahun) params.set("tahun", tahun);
+      if (config.useLimit) params.set("limit", String(limitValue));
+      if (config.useCursor && cursor) params.set("cursor", cursor);
+
+      return params;
+    }
+
+    // Normalize cursor/has_more fields from various response shapes.
+    function extractCursor(data) {
+      const meta = data?.meta || data?.pagination || {};
+      const rawHasMore = meta?.has_more ?? data?.has_more;
+      let hasMore = false;
+      if (typeof rawHasMore === "string") {
+        hasMore = rawHasMore.toLowerCase() === "true";
+      } else {
+        hasMore = Boolean(rawHasMore);
+      }
+      const rawCursor = meta?.cursor ?? meta?.next_cursor ?? data?.cursor ?? data?.next_cursor ?? data?.cursor_next;
+      return {
+        next: rawCursor ? String(rawCursor) : "",
+        hasMore,
+        limit: meta?.limit,
+        meta
+      };
+    }
+
+    // Toggle buttons during fetch.
+    function setBusy(isBusy) {
+      document.getElementById("showBtn").disabled = isBusy;
+      document.getElementById("downloadBtn").disabled = isBusy;
+    }
+
+    // Update status text.
+    function setStatus(text) {
+      document.getElementById("status").textContent = text;
+    }
+
+    function setCount() {}
+
+    // Endpoint parameter configuration.
+    const ENDPOINT_CONFIG = {
+      // E-Katalog endpoints
+      "/api/v1/ekatalog/paket-e-purchasing": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/ekatalog/penyedia-detail": { useKodePenyedia: true, useLimit: false, useCursor: false },
+      // RUP endpoints
+      "/api/v1/rup/master-satker": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/rup/paket-anggaran-penyedia": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/rup/paket-anggaran-swakelola": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/rup/paket-penyedia-terumumkan": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/rup/paket-swakelola-terumumkan": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/rup/program-master": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      // Tender endpoints
+      "/api/v1/tender/jadwal-tahapan-non-tender": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/jadwal-tahapan-tender": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/non-tender-ekontrak-kontrak": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/non-tender-pengumuman": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/non-tender-selesai": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/pencatatan-non-tender": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/pencatatan-non-tender-realisasi": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/pencatatan-swakelola": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/pencatatan-swakelola-realisasi": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/pengumuman": { useKodeTender: true, useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/peserta-tender": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/tender-ekontrak-kontrak": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true },
+      "/api/v1/tender/tender-selesai-nilai": { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true }
+    };
+
+    function getPathFromUrl(url) {
+      try {
+        return new URL(url).pathname;
+      } catch (err) {
+        return url;
+      }
+    }
+
+    function getEndpointConfig() {
+      const apiUrl = document.getElementById("apiUrl").value.trim();
+      const path = getPathFromUrl(apiUrl);
+      return ENDPOINT_CONFIG[path] || { useKodeKlpd: true, useTahun: true, useLimit: true, useCursor: true };
+    }
+
+    function updateFieldVisibility(config) {
+      document.getElementById("fieldKodeKlpd").style.display = config.useKodeKlpd ? "block" : "none";
+      document.getElementById("fieldKodePenyedia").style.display = config.useKodePenyedia ? "block" : "none";
+      document.getElementById("fieldKodeTender").style.display = config.useKodeTender ? "block" : "none";
+      document.getElementById("fieldTahun").style.display = config.useTahun ? "block" : "none";
+    }
+
+    // Cached results for reuse between Show and Download.
+    let lastItems = null;
+    let lastSignature = "";
+
+    // Cache key to reuse fetched data across Show/Download.
+    function getSignature() {
+      const apiUrl = document.getElementById("apiUrl").value.trim();
+      const config = getEndpointConfig();
+      const kodeKlpd = document.getElementById("kodeKlpd").value.trim();
+      const tahun = document.getElementById("tahun").value.trim();
+      const kodePenyedia = document.getElementById("kodePenyedia").value.trim();
+      const kodeTender = document.getElementById("kodeTender").value.trim();
+      return [
+        apiUrl,
+        config.useKodeKlpd ? kodeKlpd : "",
+        config.useKodePenyedia ? kodePenyedia : "",
+        config.useKodeTender ? kodeTender : "",
+        config.useTahun ? tahun : ""
+      ].join("|");
+    }
+
+    // Fetch all pages using cursor pagination, with retry on missing cursor.
+    async function fetchAllItems() {
+      const token = document.getElementById("token").value.trim();
+      const tableEl = document.getElementById("table");
+      const tableWrapEl = document.getElementById("tableWrap");
+      const debug = document.getElementById("debug").checked;
+      // Reset UI state before fetching.
+      setStatus("");
+      tableEl.innerHTML = "";
+      tableWrapEl.style.display = "none";
+      setBusy(true);
+      const apiUrl = document.getElementById("apiUrl").value.trim();
+      const config = getEndpointConfig();
+
+      // Validate required inputs.
+      if (!token) {
+        setStatus("Please enter a token.");
+        setBusy(false);
+        return null;
+      }
+      if (!apiUrl) {
+        setStatus("Please enter an API URL.");
+        setBusy(false);
+        return null;
+      }
+
+      try {
+        let cursor = "";
+        let hasMore = true;
+        let lockedLimit = null;
+        const allItems = [];
+        setStatus("Fetching data...");
+        if (debug) {
+          console.log("[debug] start fetch");
+        }
+
+        const maxCursorRetries = 5; // change this to control retry attempts
+
+        while (hasMore) {
+          let retryCount = 0;
+          let data = null;
+          let resOk = false;
+
+          // Retry loop when API reports more pages but no cursor.
+          let missingCursorFail = false;
+          while (retryCount <= maxCursorRetries) {
+            const usedLimit = lockedLimit === null ? getRandomLimit() : lockedLimit;
+            const params = getParams(config, cursor, usedLimit);
+            const url = `${apiUrl}?${params.toString()}`;
+            if (debug) {
+              console.log("[debug] request", url);
+            }
+
+            const res = await fetch(url, {
+              method: "GET",
+              headers: {
+                "Authorization": `Bearer ${token}`
+              }
+            });
+
+            data = await res.json();
+            resOk = res.ok;
+
+            // Abort on HTTP error.
+            if (!resOk) {
+              setStatus("Getting data failed.");
+              if (debug) {
+                console.log("[debug] error", res.status, res.statusText);
+              }
+              return null;
+            }
+
+            const cursors = extractCursor(data);
+            const nextCursor = cursors.next || "";
+            const wantsMore = config.useCursor ? Boolean(cursors.hasMore) : false;
+            if (debug) {
+              console.log("[debug] meta", cursors.meta);
+            }
+
+            // Retry if cursor is missing but API says there are more pages.
+            if (wantsMore && !nextCursor) {
+              retryCount += 1;
+              if (debug) {
+                console.log("[debug] missing cursor, retry", retryCount);
+              }
+              if (retryCount > maxCursorRetries) {
+                missingCursorFail = true;
+                break;
+              }
+              await new Promise((resolve) => setTimeout(resolve, 5000));
+              continue;
+            }
+
+            // Advance cursor and lock limit once a cursor appears.
+            cursor = nextCursor;
+            hasMore = wantsMore;
+            if (lockedLimit === null && nextCursor) {
+              lockedLimit = typeof cursors.limit === "number" ? cursors.limit : usedLimit;
+              if (debug && lockedLimit !== null) {
+                console.log("[debug] lock limit", lockedLimit);
+              }
+            }
+            break;
+          }
+
+          // Fail when cursor never appears.
+          if (missingCursorFail) {
+            setStatus("Getting data failed.");
+            return null;
+          }
+
+          if (!data || !resOk) {
+            setStatus("Getting data failed.");
+            return null;
+          }
+
+          // Collect data from the current page.
+          const items = data?.data || data?.items || data?.results || [];
+          if (Array.isArray(items) && items.length) {
+            allItems.push(...items);
+          }
+          if (debug) {
+            console.log("[debug] page", {
+              got: Array.isArray(items) ? items.length : 0,
+              total: allItems.length,
+              hasMore,
+              cursor: cursor || ""
+            });
+          }
+
+          if (!cursor && hasMore) {
+            hasMore = false;
+            if (debug) {
+              console.log("[debug] stop: hasMore true but cursor empty");
+            }
+          }
+        }
+
+        // Final status after pagination ends.
+        if (allItems.length) {
+          setStatus(`Fetched ${allItems.length} rows.`);
+          if (debug) {
+            console.log("[debug] done", { total: allItems.length });
+          }
+          return allItems;
+        }
+
+        setStatus("No items found.");
+        if (debug) {
+          console.log("[debug] done", { total: 0 });
+        }
+        return [];
+      } catch (err) {
+        setStatus("Getting data failed.");
+        if (debug) {
+          console.log("[debug] exception", err);
+        }
+        return null;
+      } finally {
+        // Re-enable buttons even on failure.
+        setBusy(false);
+      }
+    }
+
+    // Build CSV and trigger download.
+    function downloadCsv(items) {
+      if (!items.length) return;
+      const columns = Object.keys(items[0]);
+      const escapeCell = (value) => {
+        const text = value === null || value === undefined ? "" : String(value);
+        return `"${text.replace(/"/g, "\"\"")}"`;
+      };
+      const rows = [
+        columns.map(escapeCell).join(","),
+        ...items.map((item) => columns.map((col) => escapeCell(item[col])).join(","))
+      ];
+      const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "data.csv";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // Render a simple table from items.
+    function renderTable(items) {
+      const tableEl = document.getElementById("table");
+      const tableWrapEl = document.getElementById("tableWrap");
+      if (!items.length) {
+        tableWrapEl.style.display = "none";
+        return;
+      }
+      tableWrapEl.style.display = "block";
+      const columns = Object.keys(items[0]);
+      const thead = document.createElement("thead");
+      const headRow = document.createElement("tr");
+      for (const col of columns) {
+        const th = document.createElement("th");
+        th.textContent = col;
+        headRow.appendChild(th);
+      }
+      thead.appendChild(headRow);
+
+      const tbody = document.createElement("tbody");
+      for (const item of items) {
+        const tr = document.createElement("tr");
+        for (const col of columns) {
+          const td = document.createElement("td");
+          const value = item[col];
+          td.textContent = value === null || value === undefined ? "" : String(value);
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      }
+
+      tableEl.innerHTML = "";
+      tableEl.appendChild(thead);
+      tableEl.appendChild(tbody);
+    }
+
+    // Show Data button handler.
+    document.getElementById("showBtn").addEventListener("click", async () => {
+      const items = await fetchAllItems();
+      if (items) {
+        lastItems = items;
+        lastSignature = getSignature();
+        renderTable(items);
+      }
+    });
+
+    // Download button handler with cache reuse.
+    document.getElementById("downloadBtn").addEventListener("click", async () => {
+      const signature = getSignature();
+      if (lastItems && lastSignature === signature && lastItems.length) {
+        downloadCsv(lastItems);
+        setStatus(`Downloaded ${lastItems.length} rows.`);
+        return;
+      }
+      const items = await fetchAllItems();
+      if (items && items.length) {
+        lastItems = items;
+        lastSignature = signature;
+        downloadCsv(items);
+        setStatus(`Downloaded ${items.length} rows.`);
+      }
+    });
+
+    // Initialize field visibility on load and when endpoint changes.
+    updateFieldVisibility(getEndpointConfig());
+    document.getElementById("apiUrl").addEventListener("change", () => {
+      updateFieldVisibility(getEndpointConfig());
+    });
+  </script>
+</body>
+</html>

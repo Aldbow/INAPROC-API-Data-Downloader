@@ -24,7 +24,8 @@ export default function Home() {
       const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || result.details || "Failed to fetch data")
+        const errorMessage = result.error ? `${result.error}${result.details ? `: ${result.details}` : ''}` : result.details || "Failed to fetch data";
+        throw new Error(errorMessage)
       }
 
       // INAPROC usually returns data in a 'data' property

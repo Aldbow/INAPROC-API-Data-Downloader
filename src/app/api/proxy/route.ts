@@ -23,11 +23,14 @@ export async function GET(request: NextRequest) {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'User-Agent': 'PostmanRuntime/7.26.8'
             },
         });
 
         if (!response.ok) {
             const errorText = await response.text();
+            console.error(`Upstream API failed with status: ${response.status}`);
+            console.error(`Error details: ${errorText}`);
             return NextResponse.json({ error: `API Error: ${response.status}`, details: errorText }, { status: response.status });
         }
 

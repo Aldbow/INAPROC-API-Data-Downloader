@@ -5,8 +5,12 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const endpoint = searchParams.get('endpoint') || 'ekatalog-archive/paket-e-purchasing';
         const tahun = searchParams.get('tahun') || '2025';
-        const limit = searchParams.get('limit') || '5';
-        const kode_klpd = searchParams.get('kode_klpd') || 'K34'; // Default to K34 as per original script
+        const limit = searchParams.get('limit');
+        const kode_klpd = searchParams.get('kode_klpd');
+        const validLimit = limit || '5';
+        const validKodeKlpd = kode_klpd || 'K34';
+        const validTahun = tahun || new Date().getFullYear().toString();
+        // Pagination support
 
         const token = process.env.JWT_TOKEN;
 
@@ -14,7 +18,28 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'JWT_TOKEN is not defined in environment variables' }, { status: 500 });
         }
 
-        const apiUrl = `https://data.inaproc.id/api/v1/${endpoint}?limit=${limit}&kode_klpd=${kode_klpd}&tahun=${tahun}`;
+        let apiPath = endpoint;
+        // If the endpoint doesn't start with 'api/', assume it's a v1 endpoint for backward compatibility
+        // unless it's explicitly one of the new paths which are passed with 'api/' prefix.
+        // Actually, the user input might or might not have it. 
+        // Let's normalize: if it starts with '/', remove it.
+        if (apiPath.startsWith('/')) {
+            apiPath = apiPath.substring(1);
+        }
+
+        if (!apiPath.startsWith('api/')) {
+            apiPath = `api/v1/${apiPath}`;
+        }
+
+        const baseUrl = `https://data.inaproc.id/${apiPath}`;
+        const hasQuery = baseUrl.includes('?');
+        const separator = hasQuery ? '&' : '?';
+
+        // Ensure limit, kode_klpd, and tahun are appended properly.
+        // We use URLSearchParams to construct the query string safely if we were building from scratch,
+        // but since we are appending to a potentially existing path, string concatenation with checks is practical.
+
+        const apiUrl = `${baseUrl}${separator}limit=${validLimit}&kode_klpd=${validKodeKlpd}&tahun=${validTahun}`;
 
         console.log(`Fetching from: ${apiUrl}`);
 

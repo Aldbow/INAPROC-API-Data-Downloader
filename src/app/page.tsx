@@ -17,7 +17,13 @@ export default function Home() {
     setData([])
 
     try {
-      const response = await fetch(`/api/proxy?year=${year}&endpoint=${endpoint}&limit=${limit}`, {
+      const safeEndpoint = encodeURIComponent(endpoint)
+      const safeYear = encodeURIComponent(year)
+      const safeLimit = encodeURIComponent(limit)
+
+      // Using string template instead of URLSearchParams to maintain control over the exact string format if needed,
+      // but encoding components is critical.
+      const response = await fetch(`/api/proxy?year=${safeYear}&endpoint=${safeEndpoint}&limit=${safeLimit}`, {
         method: "GET",
       })
 

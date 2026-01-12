@@ -5,6 +5,8 @@ import { InaprocForm } from "@/components/InaprocForm"
 import { ResultsTable } from "@/components/ResultsTable"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export default function Home() {
   const [data, setData] = useState<Record<string, unknown>[]>([])
@@ -61,8 +63,13 @@ export default function Home() {
       <div className="mb-8 text-center pt-8">
         <h1 className="text-3xl font-bold tracking-tight mb-2">INAPROC API Downloader</h1>
         <p className="text-muted-foreground">
-          Fetch and download procurement data securely.
+          fetch and download procurement data securely.
         </p>
+        <div className="mt-4">
+          <Link href="/bulk-download">
+            <Button variant="outline">Go to Bulk Downloader</Button>
+          </Link>
+        </div>
       </div>
 
       <div className="flex flex-col gap-6">

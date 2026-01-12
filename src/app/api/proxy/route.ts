@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
         const tahun = searchParams.get('tahun') || '2025';
         const limit = searchParams.get('limit');
         const kode_klpd = searchParams.get('kode_klpd');
+        const offset = searchParams.get('offset');
         const validLimit = limit || '5';
         const validKodeKlpd = kode_klpd || 'K34';
         const validTahun = tahun || new Date().getFullYear().toString();
@@ -39,7 +40,11 @@ export async function GET(request: NextRequest) {
         // We use URLSearchParams to construct the query string safely if we were building from scratch,
         // but since we are appending to a potentially existing path, string concatenation with checks is practical.
 
-        const apiUrl = `${baseUrl}${separator}limit=${validLimit}&kode_klpd=${validKodeKlpd}&tahun=${validTahun}`;
+        let apiUrl = `${baseUrl}${separator}limit=${validLimit}&kode_klpd=${validKodeKlpd}&tahun=${validTahun}`;
+
+        if (offset) {
+            apiUrl += `&offset=${offset}`;
+        }
 
         console.log(`Fetching from: ${apiUrl}`);
 

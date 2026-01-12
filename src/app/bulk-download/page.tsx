@@ -97,7 +97,7 @@ export default function BulkDownloadPage() {
         stopRef.current = false;
 
         try {
-            const pageSize = 500; // Use a reasonable batch size
+            const pageSize = 100; // API limits to 100 items per request
             let currentPage = 1; // Or offset based, depending on API. Assuming offset/limit for now based on previous code.
             // Wait, previous code used `limit` which implies just getting N items? 
             // Most APIs use offset & limit. Let's assume standard offset pagination if not page-based.
@@ -123,6 +123,7 @@ export default function BulkDownloadPage() {
             let currentOffset = 0;
             let hasMore = true;
             let allData: Record<string, unknown>[] = [];
+            let lastBatchSignature = "";
 
             while (hasMore && !stopRef.current) {
                 setProgress(p => ({ ...p, status: `Fetching batch at offset ${currentOffset}...` }));
